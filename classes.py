@@ -1,4 +1,5 @@
 import uuid
+import datetime
 class ProductCategory:
     def __init__(self, name, price):
         self.__id = uuid.uuid4()
@@ -6,19 +7,20 @@ class ProductCategory:
         self.__name = name
     def get_id(self):
         return self.__id
-category = ProductCategory("vanila cake",80)
+
 
 class Order:
-    def __init__(self, created_at_time, order_items, price, discount, delivery_address):
+    def __init__(self, order_items, price, discount, address):
         self.__id = uuid.uuid4()
         self.__price = price
-        self.__created_at_time = created_at_time
+        self.__created_at_time = datetime.datetime.now()
         self.__order_items = order_items
         self.__discount = discount
-        self.__delivery_address = delivery_address
+        self.__address = address
 
 class OrderItem:
     def __init__(self, product_category, quantity, order_id):
+        self.__id = uuid.uuid4()
         self.__product_category = product_category
         self.__order_id = order_id
         self.__quantity = quantity
@@ -37,8 +39,8 @@ class DiscountType:
         self.__id = uuid.uuid4()
 
 class Product:
-    def __init__(self, product_category, discount_type):
+    def __init__(self, product_category, address):
         self.__id = uuid.uuid4()
         self.__product_category = product_category
-        self.__discount_type = discount_type
-print(category.get_id())
+        self.__created_at_time = datetime.datetime.now()
+        self.__address = address
