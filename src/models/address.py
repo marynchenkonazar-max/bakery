@@ -1,18 +1,23 @@
-import uuid
-from dataclasses import dataclass, field
-@dataclass
-class Address:
-    __id: uuid.uuid4()
-    __post_index: int
-    __street:str
-    __city: str
-    __latitude: float
-    __longitude: float
+from __future__ import annotations
 
-    # def __init__(self, post_index, street, city, latitude, longitude):
-    #     self.__id = uuid.uuid4()
-    #     self.__post_index = post_index
-    #     self.__street = street
-    #     self.__city = city
-    #     self.__latitude = latitude
-    #     self.__longitude = longitude
+import uuid
+
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from src.database import Base
+
+
+class Address(Base):
+    __tablename__ = "addresses"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
+    postal_code: Mapped[str] = mapped_column(String(20), nullable=False)
+    street: Mapped[str] = mapped_column(String(255), nullable=False)
+    city: Mapped[str] = mapped_column(String(100), nullable=False)
+    latitude: Mapped[float | None]
+    longitude: Mapped[float | None]
+
+    user: Mapped["User"] = relationship(back_populates="addresses")
+    orders: Mapped[list["Order"]] = relationship(back_populates="delivery_address")

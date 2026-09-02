@@ -1,15 +1,21 @@
-import uuid
-import datetime
-from dataclasses import dataclass, field
-@dataclass
-class Product:
-    __id: uuid.uuid4()
-    __product_category: str
-    __created_at_time: datetime.datetime.now()
-    __address: str
+from __future__ import annotations
 
-    # def __init__(self, product_category, address):
-    #     self.__id = uuid.uuid4()
-    #     self.__product_category = product_category
-    #     self.__created_at_time = datetime.datetime.now()
-    #     self.__address = address
+import uuid
+from datetime import datetime
+
+from sqlalchemy import DateTime, ForeignKey, String, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from src.database import Base
+
+
+class Product(Base):
+    __tablename__ = "products"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    category_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("product_categories.id"), nullable=False)
+    production_address: Mapped[str | None] = mapped_column(String(255))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    category: Mapped["ProductCategory"] = relationship(back_populates="products")
+    order_items: Mapped[list["OrderItem"]] = relationship(back_populates="product")
